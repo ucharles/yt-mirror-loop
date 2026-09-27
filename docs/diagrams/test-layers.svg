@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="test-layers-title test-layers-desc">
+<title id="test-layers-title">테스트 계층</title>
+<desc id="test-layers-desc">도메인 로직(Node)부터 실제 iPad 시뮬레이터 E2E까지 여섯 계층의 테스트와 각 계층의 도구와 개수를 보여 주며, 위로 갈수록 실제 기기에 가깝고 느리다.</desc>
+<defs>
+<style>@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&amp;family=Noto+Sans+KR:wght@400;500;600&amp;display=swap');</style>
+<marker id="test-layers-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="test-layers-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+<marker id="test-layers-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#f5f5f5"/>
+
+
+
+<rect x="184" y="88" width="736" height="64" fill="#2d3142" fill-opacity="0.02" stroke="#2d3142" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="204" y="123.0" fill="#4f5d75" font-size="9" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" letter-spacing="0.18em">L6</text>
+<text x="256" y="125.0" fill="#2d3142" font-size="15" font-weight="600" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif">수동 확인</text>
+<text x="900" y="123.0" fill="#4f5d75" font-size="10" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="end">M-01..07 · real iPad + Apple TV</text>
+<rect x="184" y="152" width="736" height="64" fill="#eb6c36" fill-opacity="0.08" stroke="#eb6c36" stroke-width="1.2"/>
+<text x="204" y="187.0" fill="#eb6c36" font-size="9" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" letter-spacing="0.18em">L5</text>
+<text x="256" y="189.0" fill="#2d3142" font-size="15" font-weight="600" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif">E2E</text>
+<text x="900" y="187.0" fill="#4f5d75" font-size="10" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="end">Maestro 19 flows + XCUITest · iPad sim</text>
+<rect x="184" y="216" width="736" height="64" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.12" stroke-width="1"/>
+<text x="204" y="251.0" fill="#4f5d75" font-size="9" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" letter-spacing="0.18em">L4</text>
+<text x="256" y="253.0" fill="#2d3142" font-size="15" font-weight="600" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif">네이티브</text>
+<text x="900" y="251.0" fill="#4f5d75" font-size="10" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="end">XCTest 14 · iPad sim</text>
+<rect x="184" y="280" width="736" height="64" fill="#ffffff" stroke="#2d3142" stroke-opacity="0.12" stroke-width="1"/>
+<text x="204" y="315.0" fill="#4f5d75" font-size="9" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" letter-spacing="0.18em">L3</text>
+<text x="256" y="317.0" fill="#2d3142" font-size="15" font-weight="600" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif">컴포넌트</text>
+<text x="900" y="315.0" fill="#4f5d75" font-size="10" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="end">RNTL · Jest</text>
+<rect x="184" y="344" width="736" height="64" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.12" stroke-width="1"/>
+<text x="204" y="379.0" fill="#4f5d75" font-size="9" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" letter-spacing="0.18em">L2</text>
+<text x="256" y="381.0" fill="#2d3142" font-size="15" font-weight="600" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif">플레이어 JS</text>
+<text x="900" y="379.0" fill="#4f5d75" font-size="10" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="end">Jest + jsdom · WebView code</text>
+<rect x="184" y="408" width="736" height="64" fill="#ffffff" stroke="#2d3142" stroke-opacity="0.12" stroke-width="1"/>
+<text x="204" y="443.0" fill="#4f5d75" font-size="9" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" letter-spacing="0.18em">L1</text>
+<text x="256" y="445.0" fill="#2d3142" font-size="15" font-weight="600" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif">도메인 로직</text>
+<text x="900" y="443.0" fill="#4f5d75" font-size="10" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="end">Jest · Node · 169 tests L1–L3</text>
+<rect x="184" y="152" width="736" height="320" fill="none" stroke="#4f5d75" stroke-width="1"/>
+<path d="M156,464 V100" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#test-layers-arrow)"/>
+<text x="144" y="266" fill="#7a8399" font-size="12" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="end">실기기에</text>
+<text x="144" y="282" fill="#7a8399" font-size="12" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="end">가깝고</text>
+<text x="144" y="298" fill="#7a8399" font-size="12" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="end">느림</text>
+<text x="184" y="500" fill="#4f5d75" font-size="10" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif">npm run test:all  =  L1 → L5  (lint · typecheck · jest · xctest · e2e)</text>
+</svg>

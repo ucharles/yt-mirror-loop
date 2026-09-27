@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="external-display-title external-display-desc">
+<title id="external-display-title">TV 연결 시 두 엔진의 차이</title>
+<desc id="external-display-desc">로컬 영상은 AVPlayer 하나에 iPad 미리보기 레이어와 TV 레이어를 함께 붙여 자동으로 동기화되고, 유튜브는 앱 안 WebView를 내리고 TV 쪽 WebView 하나만 재생하도록 명령과 이벤트를 옮긴다는 차이를 보여 준다.</desc>
+<defs>
+<style>@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&amp;family=Noto+Sans+KR:wght@400;500;600&amp;display=swap');</style>
+<marker id="external-display-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="external-display-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+<marker id="external-display-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#f5f5f5"/>
+<rect x="40" y="96" width="580" height="512" rx="8" fill="#2d3142" fill-opacity="0.02" stroke="#2d3142" stroke-opacity="0.10" stroke-width="0.8"/>
+<rect x="56" y="100" width="204" height="12" rx="2" fill="#f5f5f5"/>
+<text x="158.0" y="109" fill="#2d3142" fill-opacity="0.55" font-size="7" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle" letter-spacing="0.14em">LOCAL VIDEO · ONE PLAYER, TWO LAYERS</text>
+<rect x="660" y="96" width="580" height="512" rx="8" fill="#2d3142" fill-opacity="0.02" stroke="#2d3142" stroke-opacity="0.10" stroke-width="0.8"/>
+<rect x="676" y="100" width="188" height="12" rx="2" fill="#f5f5f5"/>
+<text x="770.0" y="109" fill="#2d3142" fill-opacity="0.55" font-size="7" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle" letter-spacing="0.14em">YOUTUBE · ONE PLAYER, MOVED TO TV</text>
+<path d="M303,240 V332 Q303,340 295,340 H184 Q176,340 176,348 V440" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#external-display-arrow)"/>
+<path d="M357,240 V332 Q357,340 365,340 H476 Q484,340 484,348 V440" fill="none" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#external-display-arrow-accent)"/>
+<path d="M923,240 V332 Q923,340 915,340 H804 Q796,340 796,348 V440" fill="none" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#external-display-arrow)"/>
+<path d="M977,240 V332 Q977,340 985,340 H1096 Q1104,340 1104,348 V440" fill="none" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#external-display-arrow-accent)"/>
+<rect x="210.0" y="318" width="60" height="16" rx="2" fill="#f5f5f5"/>
+<text x="240" y="330" fill="#7a8399" font-size="12" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">미리보기</text>
+<rect x="390.0" y="318" width="60" height="16" rx="2" fill="#f5f5f5"/>
+<text x="420" y="330" fill="#7a8399" font-size="12" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">TV 출력</text>
+<rect x="836.0" y="318" width="48" height="16" rx="2" fill="#f5f5f5"/>
+<text x="860" y="330" fill="#7a8399" font-size="12" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">분리됨</text>
+<rect x="1000.0" y="318" width="80" height="16" rx="2" fill="#f5f5f5"/>
+<text x="1040" y="330" fill="#7a8399" font-size="12" font-weight="500" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">명령·이벤트</text>
+<rect x="250" y="160" width="160" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="250" y="160" width="160" height="80" rx="6" fill="#eb6c36" fill-opacity="0.08" stroke="#eb6c36" stroke-width="1"/>
+<rect x="258" y="166" width="44" height="12" rx="2" fill="none" stroke="#eb6c36" stroke-opacity="0.40" stroke-width="0.8"/>
+<text x="280.0" y="175" fill="#eb6c36" font-size="7" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle" letter-spacing="0.08em">PLAYER</text>
+<text x="330.0" y="201.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">AVPlayer</text>
+<text x="330.0" y="216.0" fill="#4f5d75" font-size="9" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">1 instance · Swift</text>
+<rect x="96" y="440" width="160" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="96" y="440" width="160" height="80" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<rect x="104" y="446" width="32" height="12" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.40" stroke-width="0.8"/>
+<text x="120.0" y="455" fill="#2d3142" font-size="7" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle" letter-spacing="0.08em">IPAD</text>
+<text x="176.0" y="481.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">iPad 미리보기</text>
+<text x="176.0" y="496.0" fill="#4f5d75" font-size="9" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">AVPlayerLayer</text>
+<rect x="404" y="440" width="160" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="404" y="440" width="160" height="80" rx="6" fill="#2d3142" fill-opacity="0.03" stroke="#2d3142" stroke-opacity="0.30" stroke-width="1"/>
+<rect x="412" y="446" width="24" height="12" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.30" stroke-width="0.8"/>
+<text x="424.0" y="455" fill="#4f5d75" font-size="7" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle" letter-spacing="0.08em">TV</text>
+<text x="484.0" y="481.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">TV 화면</text>
+<text x="484.0" y="496.0" fill="#4f5d75" font-size="9" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">AVPlayerLayer</text>
+<rect x="870" y="160" width="160" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="870" y="160" width="160" height="80" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<rect x="878" y="166" width="44" height="12" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.40" stroke-width="0.8"/>
+<text x="900.0" y="175" fill="#2d3142" font-size="7" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle" letter-spacing="0.08em">BRIDGE</text>
+<text x="950.0" y="201.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">명령 브리지</text>
+<text x="950.0" y="216.0" fill="#4f5d75" font-size="9" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">YouTubeBridge</text>
+<rect x="716" y="440" width="160" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="716" y="440" width="160" height="80" rx="6" fill="#2d3142" fill-opacity="0.02" stroke="#2d3142" stroke-opacity="0.20" stroke-width="1" stroke-dasharray="4,3"/>
+<rect x="724" y="446" width="32" height="12" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.25" stroke-width="0.8"/>
+<text x="740.0" y="455" fill="#7a8399" font-size="7" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle" letter-spacing="0.08em">IPAD</text>
+<text x="796.0" y="481.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">앱 안 WebView</text>
+<text x="796.0" y="496.0" fill="#4f5d75" font-size="9" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">unmounted</text>
+<rect x="1024" y="440" width="160" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="1024" y="440" width="160" height="80" rx="6" fill="#eb6c36" fill-opacity="0.08" stroke="#eb6c36" stroke-width="1"/>
+<rect x="1032" y="446" width="24" height="12" rx="2" fill="none" stroke="#eb6c36" stroke-opacity="0.40" stroke-width="0.8"/>
+<text x="1044.0" y="455" fill="#eb6c36" font-size="7" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle" letter-spacing="0.08em">TV</text>
+<text x="1104.0" y="481.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">TV WebView</text>
+<text x="1104.0" y="496.0" fill="#4f5d75" font-size="9" font-family="'Noto Sans KR', 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif" text-anchor="middle">WKWebView</text>
+</svg>
