@@ -1,0 +1,26 @@
+# E-15
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow: ../common/import_counter.yaml
+- runFlow:
+    file: ../common/open_video.yaml
+    env: { TITLE: counter_30fps_60s }
+- runFlow:
+    file: ../common/seek.yaml
+    env: { T: 5, LABEL: "0:05.000" }
+- assertVisible: { id: layout-solo }
+- tapOn: { id: btn-fake-external }
+- extendedWaitUntil:
+    visible: { id: layout-controller }
+    timeout: 5000
+- assertVisible: { id: external-preview }
+- assertVisible: { id: btn-fake-external, text: "external:on" }
+- assertVisible: { id: time-current, text: "0:05.000" }
+- tapOn: { id: btn-fake-external }
+- extendedWaitUntil:
+    visible: { id: layout-solo }
+    timeout: 5000
+- assertVisible: { id: native-player }
+- assertVisible: { id: time-current, text: "0:05.000" }

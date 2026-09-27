@@ -1,0 +1,70 @@
+{
+  "format": "yt-mirror-loop",
+  "schemaVersion": 1,
+  "exportedAt": "2026-09-20T10:00:00.000Z",
+  "videos": [
+    {
+      "id": "conf-a",
+      "source": "youtube",
+      "videoId": "aaaaaaaaaaa",
+      "sourceUrl": "https://youtu.be/aaaaaaaaaaa",
+      "title": "Alpha 덮어씀",
+      "originalTitle": "Alpha 덮어씀",
+      "tags": [],
+      "baseMirror": true,
+      "segments": [
+        {
+          "id": "s1",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "id": "s2",
+          "start": 10,
+          "end": 12
+        }
+      ],
+      "createdAt": "2026-09-20T10:00:00.000Z",
+      "updatedAt": "2026-09-20T10:00:00.000Z"
+    },
+    {
+      "id": "conf-b",
+      "source": "youtube",
+      "videoId": "bbbbbbbbbbb",
+      "sourceUrl": "https://youtu.be/bbbbbbbbbbb",
+      "title": "Bravo 건너뜀",
+      "originalTitle": "Bravo 건너뜀",
+      "tags": [],
+      "baseMirror": false,
+      "segments": [],
+      "createdAt": "2026-09-20T10:00:00.000Z",
+      "updatedAt": "2026-09-20T10:00:00.000Z"
+    },
+    {
+      "id": "conf-c",
+      "source": "youtube",
+      "videoId": "ccccccccccc",
+      "sourceUrl": "https://youtu.be/ccccccccccc",
+      "title": "Charlie 복사본",
+      "originalTitle": "Charlie 복사본",
+      "tags": [],
+      "baseMirror": false,
+      "segments": [],
+      "createdAt": "2026-09-20T10:00:00.000Z",
+      "updatedAt": "2026-09-20T10:00:00.000Z"
+    },
+    {
+      "id": "conf-d",
+      "source": "youtube",
+      "videoId": "ddddddddddd",
+      "sourceUrl": "https://youtu.be/ddddddddddd",
+      "title": "Delta 복사본",
+      "originalTitle": "Delta 복사본",
+      "tags": [],
+      "baseMirror": false,
+      "segments": [],
+      "createdAt": "2026-09-20T10:00:00.000Z",
+      "updatedAt": "2026-09-20T10:00:00.000Z"
+    }
+  ]
+}

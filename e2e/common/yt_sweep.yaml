@@ -1,0 +1,12 @@
+# Plays across the [30,40) segment at RATE until FLIPS boundary flips have been logged.
+appId: com.pgmworks.ytmirrorloop
+---
+- tapOn: { id: "btn-rate-${RATE}" }
+- runFlow:
+    file: seek.yaml
+    env: { T: 28, LABEL: "0:2[78].*" }
+- tapOn: { id: btn-play }
+- extendedWaitUntil:
+    visible: { id: e2e-flip-count, text: "${FLIPS}" }
+    timeout: 40000
+- tapOn: { id: btn-pause }

@@ -1,0 +1,8 @@
+# Runs a debug command. Takes the deep-link form (ytmirror://e2e/<cmd>?...) and types it into the
+# E2E command field, because iOS shows an undrivable "Open in app?" alert for custom-scheme links.
+appId: com.pgmworks.ytmirrorloop
+---
+- tapOn:
+    id: e2e-cmd
+- inputText: ${URL.replace('ytmirror://e2e/', '')}
+- pressKey: Enter

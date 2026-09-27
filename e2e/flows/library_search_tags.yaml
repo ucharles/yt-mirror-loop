@@ -1,0 +1,44 @@
+# E-19 (P1)
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow:
+    file: ../common/link.yaml
+    env:
+      URL: "ytmirror://e2e/import-json?name=export_v1_basic.json"
+- extendedWaitUntil:
+    visible: { text: Alpha 원본 }
+    timeout: 10000
+- runFlow:
+    file: ../common/import_counter.yaml
+- tapOn: { id: card-menu-basic-a }
+- tapOn: { id: info-tag-input }
+- inputText: kpop
+- tapOn: { id: btn-add-tag }
+- tapOn: { id: btn-info-close }
+- tapOn: { id: card-menu-basic-b }
+- tapOn: { id: info-tag-input }
+- inputText: kp
+- tapOn: { id: tag-suggestion-kpop }
+- assertVisible: { id: info-tag-kpop }
+- tapOn: { id: btn-info-close }
+- tapOn: { id: search-input }
+- inputText: charlie
+- assertVisible: { text: Charlie 원본 }
+- assertNotVisible: { text: Alpha 원본 }
+- eraseText: 20
+- hideKeyboard
+- tapOn: { id: filter-tag-kpop }
+- assertVisible: { text: Alpha 원본 }
+- assertVisible: { text: Bravo 원본 }
+- assertNotVisible: { text: Charlie 원본 }
+- tapOn: { id: filter-tag-kpop }
+- tapOn: { id: filter-source-local }
+- assertVisible: { text: counter_30fps_60s }
+- assertNotVisible: { text: Alpha 원본 }
+- tapOn: { id: filter-source-youtube }
+- assertNotVisible: { text: counter_30fps_60s }
+- tapOn: { id: filter-source-all }
+- tapOn: { id: sort-title }
+- assertVisible: { id: sort-title }

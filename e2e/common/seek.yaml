@@ -1,0 +1,11 @@
+appId: com.pgmworks.ytmirrorloop
+---
+- runFlow:
+    file: link.yaml
+    env:
+      URL: "ytmirror://e2e/seek?t=${T}"
+- extendedWaitUntil:
+    visible:
+      id: time-current
+      text: ${LABEL}
+    timeout: 10000

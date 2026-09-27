@@ -1,0 +1,39 @@
+# E-12
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow:
+    file: ../common/link.yaml
+    env:
+      URL: "ytmirror://e2e/import-json?name=export_v1_local_only.json"
+- extendedWaitUntil:
+    visible: { id: card-missing-local-match, text: 파일 없음 }
+    timeout: 10000
+- assertVisible: { id: card-missing-local-mismatch }
+- assertVisible: { id: btn-relink-local-match }
+- runFlow:
+    file: ../common/link.yaml
+    env:
+      URL: "ytmirror://e2e/relink-fixture?name=counter_30fps_60s.mp4&id=local-match"
+- extendedWaitUntil:
+    visible: { id: flow-message, text: 파일을 연결했습니다 }
+    timeout: 10000
+- assertNotVisible: { id: card-missing-local-match }
+- runFlow:
+    file: ../common/open_video.yaml
+    env: { TITLE: 연결 테스트 }
+- assertVisible: { id: segment-range-0, text: "0:02.000 – 0:04.000" }
+- tapOn: { id: btn-back }
+- runFlow:
+    file: ../common/link.yaml
+    env:
+      URL: "ytmirror://e2e/relink-fixture?name=counter_30fps_60s.mp4&id=local-mismatch"
+- extendedWaitUntil:
+    visible: { text: 길이가 다른 파일입니다 }
+    timeout: 10000
+- tapOn: 연결
+- extendedWaitUntil:
+    visible: { id: flow-message, text: 파일을 연결했습니다 }
+    timeout: 10000
+- assertNotVisible: { id: card-missing-local-mismatch }

@@ -1,0 +1,11 @@
+appId: com.pgmworks.ytmirrorloop
+---
+- launchApp
+- runFlow:
+    file: link.yaml
+    env:
+      URL: "ytmirror://e2e/reset"
+- extendedWaitUntil:
+    visible:
+      id: library-empty
+    timeout: 15000

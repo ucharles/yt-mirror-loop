@@ -1,0 +1,17 @@
+# E-14
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow: ../common/import_counter.yaml
+- tapOn: { id: btn-settings }
+- assertNotVisible: { id: storage-total, text: "0 B" }
+- assertVisible: { id: app-version, text: "1.0.0" }
+- assertVisible: { id: toggle-backup, text: "backup-exclude:on" }
+- tapOn: { id: toggle-backup }
+- assertVisible: { id: toggle-backup, text: "backup-exclude:off" }
+- stopApp
+- launchApp:
+    stopApp: false
+- tapOn: { id: btn-settings }
+- assertVisible: { id: toggle-backup, text: "backup-exclude:off" }

@@ -1,0 +1,15 @@
+# E-01
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- assertVisible:
+    id: btn-import-files
+- setOrientation: LANDSCAPE_LEFT
+- assertVisible:
+    id: library-empty
+- setOrientation: PORTRAIT
+- assertVisible:
+    id: library-empty
+- assertVisible:
+    id: url-input

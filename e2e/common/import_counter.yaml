@@ -1,0 +1,10 @@
+appId: com.pgmworks.ytmirrorloop
+---
+- runFlow:
+    file: link.yaml
+    env:
+      URL: "ytmirror://e2e/import-fixture?name=${FIXTURE || 'counter_30fps_60s.mp4'}"
+- extendedWaitUntil:
+    visible:
+      text: ${TITLE || 'counter_30fps_60s'}
+    timeout: 15000

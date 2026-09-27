@@ -1,0 +1,31 @@
+# E-17 (network) — segment [30,40) at 0.5×/1×/2×; every reported flip within 100 ms.
+appId: com.pgmworks.ytmirrorloop
+tags: [network]
+---
+- runFlow: ../common/reset.yaml
+- tapOn: { id: url-input }
+- inputText: https://www.youtube.com/watch?v=M7lc1UVf-VE
+- tapOn: { id: btn-add-url }
+- extendedWaitUntil:
+    visible: { id: time-duration, text: "/ 22:24" }
+    timeout: 20000
+- tapOn: { id: btn-play }
+- extendedWaitUntil:
+    visible: { id: e2e-state, text: playing }
+    timeout: 10000
+- tapOn: { id: btn-pause }
+- runFlow:
+    file: ../common/make_segment.yaml
+    env: { START: 30, START_LABEL: "0:30.*", END: 40, END_LABEL: "0:40.*" }
+- assertVisible: { id: timeline-seg-0 }
+- runFlow:
+    file: ../common/yt_sweep.yaml
+    env: { RATE: "0.5", FLIPS: "2" }
+- runFlow:
+    file: ../common/yt_sweep.yaml
+    env: { RATE: "1", FLIPS: "4" }
+- runFlow:
+    file: ../common/yt_sweep.yaml
+    env: { RATE: "2", FLIPS: "6" }
+- copyTextFrom: { id: e2e-max-error }
+- assertTrue: ${Number(maestro.copiedText) <= 100}

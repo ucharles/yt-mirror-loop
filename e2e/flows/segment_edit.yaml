@@ -1,0 +1,31 @@
+# E-09
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow: ../common/import_counter.yaml
+- runFlow:
+    file: ../common/open_video.yaml
+    env: { TITLE: counter_30fps_60s }
+- runFlow:
+    file: ../common/make_segment.yaml
+    env: { START: 2, START_LABEL: "0:02.000", END: 5, END_LABEL: "0:05.000" }
+- runFlow:
+    file: ../common/make_segment.yaml
+    env: { START: 4, START_LABEL: "0:04.000", END: 8, END_LABEL: "0:08.000" }
+- assertVisible: { id: segment-range-0, text: "0:02.000 – 0:08.000" }
+- assertNotVisible: { id: segment-row-1 }
+- tapOn: { id: seg-0-start-p0.1 }
+- assertVisible: { id: segment-range-0, text: "0:02.100 – 0:08.000" }
+- tapOn: { id: seg-0-start-m1 }
+- assertVisible: { id: segment-range-0, text: "0:01.100 – 0:08.000" }
+- tapOn: { id: seg-0-end-pf }
+- assertVisible: { id: segment-range-0, text: "0:01.100 – 0:08.033" }
+- tapOn: { id: seg-0-end-m0.1 }
+- assertVisible: { id: segment-range-0, text: "0:01.100 – 0:07.933" }
+- tapOn: { id: seg-0-label }
+- inputText: turn1
+- pressKey: Enter
+- assertVisible: { id: seg-0-label, text: turn1 }
+- tapOn: { id: seg-0-delete }
+- assertNotVisible: { id: segment-row-0 }

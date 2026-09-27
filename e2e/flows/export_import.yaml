@@ -1,0 +1,48 @@
+# E-11
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow:
+    file: ../common/link.yaml
+    env:
+      URL: "ytmirror://e2e/import-json?name=export_v1_basic.json"
+- extendedWaitUntil:
+    visible: { id: flow-message, text: ".*4개 추가.*" }
+    timeout: 10000
+- runFlow:
+    file: ../common/link.yaml
+    env:
+      URL: "ytmirror://e2e/import-json?name=export_v1_invalid_does_not_exist.json"
+- runFlow:
+    file: ../common/link.yaml
+    env:
+      URL: "ytmirror://e2e/import-json?name=export_invalid_schema.json"
+- extendedWaitUntil:
+    visible: { id: flow-message, text: ".*올바르지 않습니다.*" }
+    timeout: 10000
+- runFlow:
+    file: ../common/link.yaml
+    env:
+      URL: "ytmirror://e2e/import-json?name=export_v1_conflicts.json"
+- extendedWaitUntil:
+    visible: { id: conflict-sheet }
+    timeout: 10000
+- assertVisible: { id: conflict-title, text: ".*Alpha 덮어씀" }
+- tapOn: { id: conflict-overwrite }
+- assertVisible: { id: conflict-title, text: ".*Bravo 건너뜀" }
+- tapOn: { id: conflict-skip }
+- assertVisible: { id: conflict-title, text: ".*Charlie 복사본" }
+- tapOn: { id: conflict-apply-all }
+- tapOn: { id: conflict-copy }
+- extendedWaitUntil:
+    visible: { id: flow-message, text: ".*2개 추가, 1개 덮어씀.*" }
+    timeout: 10000
+- assertVisible: { text: Alpha 덮어씀 }
+- assertNotVisible: { text: Alpha 원본 }
+- assertVisible: { text: Bravo 원본 }
+- assertNotVisible: { text: Bravo 건너뜀 }
+- assertVisible: { text: Charlie 원본 }
+- assertVisible: { text: Charlie 복사본 }
+- assertVisible: { text: Delta 복사본 }
+- assertVisible: { text: Delta 원본 }

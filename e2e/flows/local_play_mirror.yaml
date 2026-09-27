@@ -1,0 +1,45 @@
+# E-04
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow: ../common/import_counter.yaml
+- runFlow:
+    file: ../common/open_video.yaml
+    env:
+      TITLE: counter_30fps_60s
+- runFlow:
+    file: ../common/make_segment.yaml
+    env: { START: 2, START_LABEL: "0:02.000", END: 4, END_LABEL: "0:04.000" }
+- assertVisible:
+    id: segment-range-0
+    text: 0:02.000 – 0:04.000
+- runFlow:
+    file: ../common/seek.yaml
+    env: { T: 0, LABEL: "0:00.000" }
+- assertVisible:
+    id: badge-mirror
+    text: mirror:off
+# 0.25× stretches the 2 s segment to 8 s so Maestro's polling reliably observes both states.
+- tapOn:
+    id: btn-rate-0.25
+- tapOn:
+    id: btn-play
+- extendedWaitUntil:
+    visible:
+      id: badge-mirror
+      text: mirror:on
+    timeout: 15000
+- extendedWaitUntil:
+    visible:
+      id: badge-mirror
+      text: mirror:off
+    timeout: 15000
+- tapOn:
+    id: btn-pause
+- copyTextFrom:
+    id: e2e-flip-count
+- assertTrue: ${Number(maestro.copiedText) >= 2}
+- copyTextFrom:
+    id: e2e-max-error
+- assertTrue: ${Number(maestro.copiedText) <= 34}

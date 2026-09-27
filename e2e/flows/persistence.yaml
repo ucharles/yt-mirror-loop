@@ -1,0 +1,43 @@
+# E-10
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow: ../common/import_counter.yaml
+- runFlow:
+    file: ../common/open_video.yaml
+    env: { TITLE: counter_30fps_60s }
+- runFlow:
+    file: ../common/make_segment.yaml
+    env: { START: 2, START_LABEL: "0:02.000", END: 4, END_LABEL: "0:04.000" }
+- tapOn: { id: btn-base-mirror }
+- tapOn: { id: btn-info }
+- tapOn: { id: info-tag-input }
+- inputText: kpop
+- tapOn: { id: btn-add-tag }
+- tapOn: { id: info-memo }
+- inputText: chorus memo
+- tapOn: { id: info-title }
+- tapOn: { id: btn-info-close }
+- tapOn: { id: btn-back }
+- stopApp
+- launchApp:
+    stopApp: false
+- extendedWaitUntil:
+    visible: { text: counter_30fps_60s }
+    timeout: 10000
+- assertVisible: { id: card-segments-.*, text: "구간 1" }
+- assertVisible: { text: "#kpop" }
+- runFlow:
+    file: ../common/open_video.yaml
+    env: { TITLE: counter_30fps_60s }
+- assertVisible: { id: btn-base-mirror, text: "base:on" }
+- assertVisible: { id: segment-range-0, text: "0:02.000 – 0:04.000" }
+- tapOn: { id: btn-info }
+- assertVisible: { id: info-memo, text: chorus memo }
+- tapOn: { id: btn-info-close }
+- tapOn: { id: btn-play }
+- extendedWaitUntil:
+    visible: { id: e2e-state, text: playing }
+    timeout: 5000
+- tapOn: { id: btn-pause }

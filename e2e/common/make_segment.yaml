@@ -1,0 +1,17 @@
+# Creates a segment [START, END) by seeking and tapping the mark buttons.
+appId: com.pgmworks.ytmirrorloop
+---
+- runFlow:
+    file: seek.yaml
+    env:
+      T: ${START}
+      LABEL: ${START_LABEL}
+- tapOn:
+    id: btn-mark-start
+- runFlow:
+    file: seek.yaml
+    env:
+      T: ${END}
+      LABEL: ${END_LABEL}
+- tapOn:
+    id: btn-mark-end

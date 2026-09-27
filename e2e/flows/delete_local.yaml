@@ -1,0 +1,18 @@
+# E-13
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow: ../common/import_counter.yaml
+- tapOn: { id: btn-settings }
+- assertNotVisible: { id: storage-total, text: "0 B" }
+- tapOn: { id: btn-back }
+- tapOn: { id: card-menu-.* }
+- tapOn: { id: btn-info-delete }
+- assertVisible: { text: ".*영상 파일도 삭제됩니다.*" }
+- tapOn: 삭제
+- extendedWaitUntil:
+    visible: { id: library-empty }
+    timeout: 5000
+- tapOn: { id: btn-settings }
+- assertVisible: { id: storage-total, text: "0 B" }

@@ -1,0 +1,18 @@
+# E-03
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow:
+    file: ../common/link.yaml
+    env:
+      URL: "ytmirror://e2e/import-fixture?name=bad_vp9.webm"
+- extendedWaitUntil:
+    visible:
+      id: flow-message
+      text: .*iPad에서 재생할 수 없는 형식입니다.*
+    timeout: 10000
+- assertNotVisible:
+    id: video-card-.*
+- assertVisible:
+    id: library-empty

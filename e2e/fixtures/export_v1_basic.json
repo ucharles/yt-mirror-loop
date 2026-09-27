@@ -1,0 +1,65 @@
+{
+  "format": "yt-mirror-loop",
+  "schemaVersion": 1,
+  "exportedAt": "2026-09-20T10:00:00.000Z",
+  "videos": [
+    {
+      "id": "basic-a",
+      "source": "youtube",
+      "videoId": "aaaaaaaaaaa",
+      "sourceUrl": "https://youtu.be/aaaaaaaaaaa",
+      "title": "Alpha 원본",
+      "originalTitle": "Alpha 원본",
+      "tags": [],
+      "baseMirror": false,
+      "segments": [
+        {
+          "id": "s1",
+          "start": 30,
+          "end": 40
+        }
+      ],
+      "createdAt": "2026-09-20T10:00:00.000Z",
+      "updatedAt": "2026-09-20T10:00:00.000Z"
+    },
+    {
+      "id": "basic-b",
+      "source": "youtube",
+      "videoId": "bbbbbbbbbbb",
+      "sourceUrl": "https://youtu.be/bbbbbbbbbbb",
+      "title": "Bravo 원본",
+      "originalTitle": "Bravo 원본",
+      "tags": [],
+      "baseMirror": false,
+      "segments": [],
+      "createdAt": "2026-09-20T10:00:00.000Z",
+      "updatedAt": "2026-09-20T10:00:00.000Z"
+    },
+    {
+      "id": "basic-c",
+      "source": "youtube",
+      "videoId": "ccccccccccc",
+      "sourceUrl": "https://youtu.be/ccccccccccc",
+      "title": "Charlie 원본",
+      "originalTitle": "Charlie 원본",
+      "tags": [],
+      "baseMirror": false,
+      "segments": [],
+      "createdAt": "2026-09-20T10:00:00.000Z",
+      "updatedAt": "2026-09-20T10:00:00.000Z"
+    },
+    {
+      "id": "basic-d",
+      "source": "youtube",
+      "videoId": "ddddddddddd",
+      "sourceUrl": "https://youtu.be/ddddddddddd",
+      "title": "Delta 원본",
+      "originalTitle": "Delta 원본",
+      "tags": [],
+      "baseMirror": false,
+      "segments": [],
+      "createdAt": "2026-09-20T10:00:00.000Z",
+      "updatedAt": "2026-09-20T10:00:00.000Z"
+    }
+  ]
+}

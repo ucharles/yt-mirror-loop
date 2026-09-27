@@ -1,0 +1,23 @@
+# E-07
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow: ../common/import_counter.yaml
+- runFlow:
+    file: ../common/open_video.yaml
+    env: { TITLE: counter_30fps_60s }
+- runFlow:
+    file: ../common/seek.yaml
+    env: { T: 0, LABEL: "0:00.000" }
+- repeat:
+    times: 5
+    commands:
+      - tapOn: { id: btn-frame-next }
+- extendedWaitUntil:
+    visible: { id: time-current, text: "0:00.166" }
+    timeout: 5000
+- tapOn: { id: btn-frame-prev }
+- extendedWaitUntil:
+    visible: { id: time-current, text: "0:00.133" }
+    timeout: 5000

@@ -1,0 +1,28 @@
+# E-05
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow: ../common/import_counter.yaml
+- runFlow:
+    file: ../common/open_video.yaml
+    env:
+      TITLE: counter_30fps_60s
+- runFlow:
+    file: ../common/make_segment.yaml
+    env: { START: 2, START_LABEL: "0:02.000", END: 4, END_LABEL: "0:04.000" }
+- runFlow:
+    file: ../common/seek.yaml
+    env: { T: 1, LABEL: "0:01.000" }
+- assertVisible: { id: badge-mirror, text: "mirror:off" }
+- tapOn: { id: btn-base-mirror }
+- assertVisible: { id: btn-base-mirror, text: "base:on" }
+- assertVisible: { id: badge-mirror, text: "mirror:on" }
+- runFlow:
+    file: ../common/seek.yaml
+    env: { T: 3, LABEL: "0:03.000" }
+- assertVisible: { id: badge-mirror, text: "mirror:off" }
+- runFlow:
+    file: ../common/seek.yaml
+    env: { T: 5, LABEL: "0:05.000" }
+- assertVisible: { id: badge-mirror, text: "mirror:on" }

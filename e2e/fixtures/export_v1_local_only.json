@@ -1,0 +1,45 @@
+{
+  "format": "yt-mirror-loop",
+  "schemaVersion": 1,
+  "exportedAt": "2026-09-20T10:00:00.000Z",
+  "videos": [
+    {
+      "id": "local-match",
+      "source": "local",
+      "originalFileName": "연결 테스트.mp4",
+      "title": "연결 테스트",
+      "originalTitle": "연결 테스트",
+      "tags": [],
+      "baseMirror": false,
+      "segments": [
+        {
+          "id": "m1",
+          "start": 2,
+          "end": 4
+        }
+      ],
+      "durationMs": 60000,
+      "fileSize": 1266076,
+      "fingerprint": "1266076:60000",
+      "createdAt": "2026-09-20T10:00:00.000Z",
+      "updatedAt": "2026-09-20T10:00:00.000Z",
+      "fps": 30
+    },
+    {
+      "id": "local-mismatch",
+      "source": "local",
+      "originalFileName": "길이 다름.mp4",
+      "title": "길이 다름",
+      "originalTitle": "길이 다름",
+      "tags": [],
+      "baseMirror": false,
+      "segments": [],
+      "durationMs": 10000,
+      "fileSize": 5000,
+      "fingerprint": "5000:10000",
+      "createdAt": "2026-09-20T10:00:00.000Z",
+      "updatedAt": "2026-09-20T10:00:00.000Z",
+      "fps": 30
+    }
+  ]
+}

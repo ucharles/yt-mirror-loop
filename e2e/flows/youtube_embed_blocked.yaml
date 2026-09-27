@@ -1,0 +1,20 @@
+# E-18 (network) — a video whose owner disabled embedding (watch page: "playableInEmbed":false) must show the
+# blocked message + file-import hint. Override with BLOCKED_URL if this video's setting changes.
+appId: com.pgmworks.ytmirrorloop
+tags: [network]
+---
+- runFlow: ../common/reset.yaml
+- tapOn: { id: url-input }
+- inputText: ${BLOCKED_URL || 'https://www.youtube.com/watch?v=0bOLzAptLTY'}
+- tapOn: { id: btn-add-url }
+- extendedWaitUntil:
+    visible: { id: screen-player }
+    timeout: 10000
+- tapOn:
+    id: btn-play
+    optional: true
+- extendedWaitUntil:
+    visible: { text: ".*외부 재생이 차단되어.*" }
+    timeout: 20000
+- assertVisible: { id: player-error }
+- assertVisible: { text: ".*파일에서 가져오기.*" }

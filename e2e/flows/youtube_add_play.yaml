@@ -1,0 +1,28 @@
+# E-16 (network) — M7lc1UVf-VE is the IFrame API documentation sample video (embeddable).
+appId: com.pgmworks.ytmirrorloop
+tags: [network]
+---
+- runFlow: ../common/reset.yaml
+- tapOn: { id: url-input }
+- inputText: https://www.youtube.com/watch?v=M7lc1UVf-VE
+- tapOn: { id: btn-add-url }
+- extendedWaitUntil:
+    visible: { id: screen-player }
+    timeout: 10000
+- assertNotVisible: { id: player-title, text: M7lc1UVf-VE }
+- extendedWaitUntil:
+    visible: { id: time-duration, text: "/ 22:24" }
+    timeout: 15000
+- tapOn: { id: btn-play }
+- extendedWaitUntil:
+    visible: { id: e2e-state, text: playing }
+    timeout: 3000
+- tapOn: { id: btn-pause }
+- extendedWaitUntil:
+    visible: { id: e2e-state, text: paused }
+    timeout: 5000
+- tapOn: { id: btn-play }
+- extendedWaitUntil:
+    visible: { id: e2e-state, text: playing }
+    timeout: 5000
+- tapOn: { id: btn-pause }

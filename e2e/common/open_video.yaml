@@ -1,0 +1,12 @@
+appId: com.pgmworks.ytmirrorloop
+---
+- tapOn:
+    text: ${TITLE}
+- extendedWaitUntil:
+    visible:
+      id: screen-player
+    timeout: 10000
+- extendedWaitUntil:
+    visible:
+      id: e2e-state
+    timeout: 10000

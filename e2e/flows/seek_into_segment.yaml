@@ -1,0 +1,34 @@
+# E-06
+appId: com.pgmworks.ytmirrorloop
+tags: [offline]
+---
+- runFlow: ../common/reset.yaml
+- runFlow:
+    file: ../common/import_counter.yaml
+    env: { FIXTURE: asym_arrow_10s.mp4, TITLE: asym_arrow_10s }
+- runFlow:
+    file: ../common/open_video.yaml
+    env: { TITLE: asym_arrow_10s }
+- runFlow:
+    file: ../common/make_segment.yaml
+    env: { START: 2, START_LABEL: "0:02.000", END: 5, END_LABEL: "0:05.000" }
+- runFlow:
+    file: ../common/seek.yaml
+    env: { T: 1, LABEL: "0:01.000" }
+- assertVisible: { id: badge-mirror, text: "mirror:off" }
+- takeScreenshot:
+    path: e2e/report/e06_original
+    cropOn:
+      id: native-player
+- runFlow:
+    file: ../common/link.yaml
+    env:
+      URL: "ytmirror://e2e/seek?t=3"
+- extendedWaitUntil:
+    visible: { id: badge-mirror, text: "mirror:on" }
+    timeout: 3000
+- assertVisible: { id: time-current, text: "0:03.000" }
+- takeScreenshot:
+    path: e2e/report/e06_mirrored
+    cropOn:
+      id: native-player
