@@ -30,7 +30,8 @@ iPad용 안무 연습 플레이어입니다. 유튜브 영상이나 기기에 �
 
 > 앱을 **삭제**하면 가져온 영상 파일도 함께 지워집니다. 갱신(재서명)으로는 지워지지 않습니다. 중요한 구간 정보는 [내보내기]로 백업해 두세요.
 
-설치 방법은 [docs/INSTALL.md](docs/INSTALL.md)에 있습니다. 앱스토어 없이 무료 Apple ID로 설치하고, SideStore로 7일마다 자동 갱신합니다.
+설치 방법은 [docs/INSTALL.md](docs/INSTALL.md)에 있습니다. 앱스토어 없이 무료 Apple ID로 설치하고, SideStore로 만료 전에 갱신합니다. 자동 갱신을 설정하더라도 성공 여부를 확인해야 합니다.
+비개발자용 [사용 안내](docs/SIDESTORE_USER_GUIDE.md)도 함께 전달합니다.
 
 ---
 
