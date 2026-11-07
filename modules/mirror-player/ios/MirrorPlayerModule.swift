@@ -115,14 +115,14 @@ public class MirrorPlayerModule: Module {
       ExternalDisplayManager.shared.setFake(on)
     }.runOnQueue(.main)
 
-    AsyncFunction("setExternalContent") { (kind: String, html: String?, baseUrl: String?) in
+    AsyncFunction("setExternalContent") { (kind: String, html: String?, baseUrl: String?, frameScript: String?) in
       let ext = ExternalDisplayManager.shared
       switch kind {
       case "local":
         ext.setContent(.local(Self.engine))
       case "youtube":
         if let html, let base = URL(string: baseUrl ?? "https://yt-mirror-loop.local/") {
-          ext.setContent(.youtube(html: html, baseURL: base))
+          ext.setContent(.youtube(html: html, baseURL: base, frameScript: frameScript ?? ""))
         }
       default:
         ext.setContent(.none)
@@ -131,6 +131,10 @@ public class MirrorPlayerModule: Module {
 
     AsyncFunction("sendExternalCommand") { (json: String) in
       ExternalDisplayManager.shared.sendCommand(json: json)
+    }.runOnQueue(.main)
+
+    AsyncFunction("openYouTubeSettings") { () -> Bool in
+      ExternalDisplayManager.shared.openYouTubeSettings()
     }.runOnQueue(.main)
 
     AsyncFunction("enableKeyboardShortcuts") { KeyboardShortcuts.install() }.runOnQueue(.main)

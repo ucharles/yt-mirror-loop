@@ -64,7 +64,7 @@ export class NativeBridge implements PlayerBridge {
     else this.mod.clearLoop();
   }
   setExternalMode(on: boolean) {
-    this.mod.setExternalContent(on ? 'local' : 'none', null, null);
+    this.mod.setExternalContent(on ? 'local' : 'none', null, null, null);
   }
   on<K extends keyof BridgeEvents>(ev: K, cb: (p: BridgeEvents[K]) => void) {
     return this.emitter.on(ev, cb);

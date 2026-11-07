@@ -43,6 +43,18 @@ export type PlayerState = {
   setError(code: string | null): void;
   setRates(rates: number[]): void;
   setRate(rate: number): void;
+  seekTo(t: number): void;
+  seekBy(delta: number): void;
+  stepFrames(frames: number, fps: number): void;
+  disableLoopOutside(t: number): void;
+  scrubbing: boolean;
+  scrubTarget: number | null;
+  scrubWasPlaying: boolean;
+  beginScrub(): void;
+  updateScrub(t: number): void;
+  endScrub(t: number, resume?: boolean): void;
+  seekTarget: number | null;
+  seekDeadline: number;
   markA(): string | null;
   markB(): string | null;
   nudgeLoopPoint(which: 'a' | 'b', delta: number): void;
@@ -69,6 +81,11 @@ const initial = {
   maxErrorMs: 0,
   error: null,
   lastSavedAt: 0,
+  scrubbing: false,
+  scrubTarget: null as number | null,
+  scrubWasPlaying: false,
+  seekTarget: null as number | null,
+  seekDeadline: 0,
 };
 
 export const usePlayer = create<PlayerState>((set, get) => {
@@ -98,6 +115,13 @@ export const usePlayer = create<PlayerState>((set, get) => {
       set({ bridge });
     },
     onTime(t, duration) {
+      if (get().scrubbing) {
+        if (duration) set({ duration });
+        return;
+      }
+      const pending = get();
+      if (pending.seekTarget !== null && now() < pending.seekDeadline && Math.abs(t - pending.seekTarget) > 0.5) return;
+      if (pending.seekTarget !== null) set({ seekTarget: null });
       set({ t, duration: duration || get().duration });
       const s = get();
       if (s.videoId && now() - s.lastSavedAt >= SAVE_THROTTLE_MS) {
@@ -129,6 +153,44 @@ export const usePlayer = create<PlayerState>((set, get) => {
       get().bridge?.setRate(rate);
       const { videoId, t } = get();
       if (videoId) useLibrary.getState().savePlayback(videoId, t, rate);
+    },
+    disableLoopOutside(t) {
+      const loop = get().loop;
+      if (isActive(loop) && (t < loop.a! || t >= loop.b!)) pushLoop({ ...loop, enabled: false });
+    },
+    seekTo(t) {
+      const s = get();
+      const target = Math.max(0, s.duration > 0 ? Math.min(s.duration, t) : t);
+      s.disableLoopOutside(target);
+      set({ t: target, seekTarget: target, seekDeadline: now() + 1500 });
+      s.bridge?.seekTo(target);
+    },
+    seekBy(delta) {
+      get().seekTo(get().t + delta);
+    },
+    stepFrames(frames, fps) {
+      const s = get();
+      const target = Math.max(0, (Math.round(s.t * fps) + frames) / fps);
+      s.disableLoopOutside(target);
+      s.bridge?.stepFrames?.(frames);
+    },
+    beginScrub() {
+      if (get().scrubbing) return;
+      const wasPlaying = get().state === 'playing' || get().state === 'buffering';
+      set({ scrubbing: true, scrubWasPlaying: wasPlaying });
+      get().bridge?.pause();
+    },
+    updateScrub(t) {
+      set({ t, scrubTarget: t });
+      get().disableLoopOutside(t);
+    },
+    endScrub(t, resume = true) {
+      const s = get();
+      if (!s.scrubbing) return;
+      // Timeline has already sent the final (unthrottled) seek.
+      set({ t });
+      set({ scrubbing: false, scrubTarget: null, scrubWasPlaying: false });
+      if (s.scrubWasPlaying && resume) s.bridge?.play();
     },
     markA() {
       const r = setA(get().loop, get().t);

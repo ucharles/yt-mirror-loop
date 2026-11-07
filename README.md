@@ -85,8 +85,21 @@ docs/                        PRD, 구현 계획, 테스트 계획, 설치, 스�
 
 ### 명령어
 
+실제 iPad에서 개발할 때는 Xcode의 Settings → Accounts에서 Apple ID를 먼저
+등록합니다. 무료 계정의 Personal Team도 사용할 수 있습니다. iPad의 개발자 모드를
+켜고 USB로 연결한 뒤 `npm run ios:device`로 기기를 선택하면 Debug 앱 설치와
+Metro 실행을 함께 진행합니다. 특정 기기는 `npm run ios:device -- <UDID>`로 선택합니다.
+서명 인증서가 없다면 Xcode의 계정 화면에서 Manage Certificates → + → Apple
+Development로 생성합니다.
+
+설치 후 JS/TS 수정은 Fast Refresh로 반영됩니다. 다음 개발 세션에서는
+`npm start -- --lan`으로 Metro를 켜고 개발용 앱을 엽니다. Mac과 iPad는 같은
+네트워크에 연결해야 합니다. Swift 모듈이나 config plugin을 수정했다면
+`npm run ios:device`로 다시 빌드합니다. 무료 서명은 만료되면 재설치해야 합니다.
+
 | 명령 | 하는 일 |
 |---|---|
+| `npm run ios:device` | 연결된 iPad에 개발용 Debug 앱 설치 후 Metro 실행 |
 | `npm run doctor` | Xcode, 시뮬레이터, CocoaPods, Maestro 등 환경 점검 |
 | `npm test` | Jest (L1–L3), 커버리지 기준 적용 (`src/domain` 95%, 전체 80%) |
 | `npm run test:native` | iPad 시뮬레이터에서 MirrorPlayer XCTest |

@@ -13,9 +13,11 @@ jest.mock('expo-video-thumbnails', () => ({ getThumbnailAsync: jest.fn(async () 
 jest.mock('expo-document-picker', () => ({ getDocumentAsync: jest.fn(async () => ({ canceled: true, assets: null })) }));
 jest.mock('expo-sharing', () => ({ shareAsync: jest.fn(async () => {}) }));
 jest.mock('expo-router', () => {
+  const navigation = { setOptions: jest.fn(), addListener: jest.fn(() => () => {}), dispatch: jest.fn() };
   const router = { push: jest.fn(), back: jest.fn(), replace: jest.fn(), dismissTo: jest.fn(), canGoBack: jest.fn(() => true) };
   return {
     __router: router,
+    useNavigation: () => navigation,
     useRouter: () => router,
     useLocalSearchParams: jest.fn(() => ({})),
     Redirect: () => null,

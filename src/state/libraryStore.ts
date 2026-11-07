@@ -44,6 +44,7 @@ export type LibraryState = {
   setMemo(id: string, memo: string): void;
   setTags(id: string, tags: string[]): void;
   markOpened(id: string): void;
+  saveYouTubeDuration(id: string, seconds: number): void;
   savePlayback(id: string, position: number, rate: number): void;
   reset(): void;
 };
@@ -117,6 +118,14 @@ export const useLibrary = create<LibraryState>((set, get) => {
     },
     markOpened(id) {
       patchOne(id, (v) => ({ ...v, lastOpenedAt: stamp() }));
+    },
+    saveYouTubeDuration(id, seconds) {
+      const durationMs = Math.round(seconds * 1000);
+      if (!Number.isSafeInteger(durationMs) || durationMs <= 0) return;
+      const video = get().videos.find((v) => v.id === id);
+      if (video?.source !== 'youtube' || video.durationMs === durationMs) return;
+      // Metadata updates should not change the user's edit timestamp or rewrite storage every tick.
+      patchOne(id, (v) => ({ ...v, durationMs }));
     },
     savePlayback(id, position, rate) {
       patchOne(id, (v) => ({ ...v, lastPosition: Math.round(position * 1000) / 1000, lastRate: rate }));

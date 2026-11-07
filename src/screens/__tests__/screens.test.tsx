@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import * as Clipboard from 'expo-clipboard';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
-import { Alert } from 'react-native';
+import { Alert, BackHandler } from 'react-native';
 
 import { localVideo, ytVideo } from '../../../test/fixtures';
 import { MirrorPlayerMock } from '../../../test/mocks/mirrorPlayer';
@@ -146,12 +146,12 @@ describe('PlayerScreen', () => {
     await fireEvent.press(screen.getByTestId('btn-frame-next'));
     expect(MirrorPlayerMock.stepFrames).toHaveBeenCalledWith(1);
   });
-  it('C-PLY-03 fine seek calls bridge.seekBy(±0.1/±1/±5)', async () => {
+  it('C-PLY-03 fine seek clamps targets before sending them to the bridge', async () => {
     await openPlayer();
     const bridge = usePlayer.getState().bridge!;
-    const spy = jest.spyOn(bridge, 'seekBy');
+    const spy = jest.spyOn(bridge, 'seekTo');
     for (const id of ['btn-seek-m5', 'btn-seek-m1', 'btn-seek-m0.1', 'btn-seek-p0.1', 'btn-seek-p1', 'btn-seek-p5']) await fireEvent.press(screen.getByTestId(id));
-    expect(spy.mock.calls.map((c) => c[0])).toEqual([-5, -1, -0.1, 0.1, 1, 5]);
+    expect(spy.mock.calls.map((c) => c[0])).toEqual([0, 0, 0, 0.1, 1.1, 6.1]);
   });
   it('C-PLY-04 mirror badge reflects engine mirror events', async () => {
     await openPlayer();
@@ -170,16 +170,86 @@ describe('PlayerScreen', () => {
     expect(deactivateKeepAwake).toHaveBeenLastCalledWith('player');
     expect(screen.getByTestId('btn-play')).toBeTruthy();
   });
-  it('C-PLY-06 landscape vs portrait layout', async () => {
+  it('C-PLY-06 restores landscape widths after portrait without replacing playback or drafts', async () => {
     const dims = jest.spyOn(require('react-native/Libraries/Utilities/useWindowDimensions'), 'default');
     dims.mockReturnValue({ width: 1366, height: 1024, scale: 2, fontScale: 1 } as never);
-    await openPlayer();
-    expect(screen.getByTestId('layout-landscape')).toBeTruthy();
-    await screen.unmount();
+    const view = await openPlayer();
+    const resizeBody = async (width: number) => act(async () => {
+      screen.getByTestId('layout-solo').props.onLayout({ nativeEvent: { layout: { width } } });
+    });
+    await resizeBody(1366);
+    const initialStyle = screen.getByTestId('layout-landscape').props.style;
+    const initialPage = webviewCalls.props.source.html;
+    await fireEvent.press(screen.getByTestId('seg-0-label-edit'));
+    await fireEvent.changeText(screen.getByTestId('seg-0-label'), '회전 후 유지');
+    await fireEvent.press(screen.getByTestId('btn-mark-start'));
     dims.mockReturnValue({ width: 1024, height: 1366, scale: 2, fontScale: 1 } as never);
-    await openPlayer();
-    expect(screen.getByTestId('layout-portrait')).toBeTruthy();
+    await view.rerender(<PlayerScreen videoId="y" fileUriFor={(n) => `file:///doc/videos/${n}`} />);
+    await resizeBody(1024);
+    expect(screen.getByTestId('layout-portrait')).toHaveStyle({ width: 1000 });
+    dims.mockReturnValue({ width: 1366, height: 1024, scale: 2, fontScale: 1 } as never);
+    await view.rerender(<PlayerScreen videoId="y" fileUriFor={(n) => `file:///doc/videos/${n}`} />);
+    await resizeBody(1366);
+    expect(screen.getByTestId('layout-landscape').props.style).toEqual(initialStyle);
+    expect(screen.getByTestId('seg-0-label').props.value).toBe('회전 후 유지');
+    expect(screen.getByTestId('btn-mark-start').props.accessibilityState.selected).toBe(true);
+    expect(webviewCalls.props.source.html).toBe(initialPage);
     dims.mockRestore();
+  });
+  it('caches duration received after YouTube ready without replacing the playback page', async () => {
+    await openPlayer();
+    const bridge = usePlayer.getState().bridge as any;
+    const page = webviewCalls.props.source.html;
+    await act(async () => bridge.handleEvent({ type: 'ready', rates: [1], duration: 0 }));
+    expect(useLibrary.getState().videos[0].durationMs).toBeUndefined();
+    await act(async () => bridge.handleEvent({ type: 'timeupdate', t: 1, duration: 125 }));
+    expect(useLibrary.getState().videos[0].durationMs).toBe(125000);
+    expect(usePlayer.getState().bridge).toBe(bridge);
+    expect(webviewCalls.props.source.html).toBe(page);
+    await act(async () => bridge.handleEvent({ type: 'ready', rates: [1], duration: 126 }));
+    expect(useLibrary.getState().videos[0].durationMs).toBe(126000);
+  });
+  it('fullscreen expands the existing YouTube player and restores controls and playback state', async () => {
+    await openPlayer();
+    const bridge = usePlayer.getState().bridge;
+    const page = webviewCalls.props.source.html;
+    const engine = screen.getByTestId('youtube-webview');
+    await act(async () => usePlayer.setState({ t: 35, mirrored: true, state: 'playing' }));
+    await fireEvent.press(screen.getByTestId('btn-mark-start'));
+    await fireEvent.press(screen.getByTestId('btn-fullscreen'));
+    expect(screen.getByTestId('video-area')).toHaveStyle({ flex: 1 });
+    expect(screen.getByTestId('youtube-webview')).toBe(engine);
+    expect(screen.getByTestId('segment-panel', { includeHiddenElements: true })).toHaveStyle({ display: 'none' });
+    expect(screen.queryByTestId('btn-play')).toBeNull();
+    expect(usePlayer.getState()).toMatchObject({ bridge, t: 35, mirrored: true, state: 'playing' });
+    expect(webviewCalls.props.source.html).toBe(page);
+    await fireEvent.press(screen.getByTestId('btn-exit-fullscreen'));
+    expect(screen.getByTestId('video-area')).toHaveStyle({ aspectRatio: 16 / 9 });
+    expect(screen.getByTestId('segment-panel')).toBeTruthy();
+    expect(screen.getByTestId('btn-mark-start').props.accessibilityState.selected).toBe(true);
+    expect(screen.getByTestId('youtube-webview')).toBe(engine);
+  });
+  it('fullscreen keeps the local player loaded and handles system back before navigation', async () => {
+    const back = jest.spyOn(BackHandler, 'addEventListener');
+    await openPlayer(localVideo({ id: 'l', fileName: 'l.mp4' }));
+    const loads = MirrorPlayerMock.load.mock.calls.length;
+    await fireEvent.press(screen.getByTestId('btn-fullscreen'));
+    const handler = back.mock.calls.find((call) => call[0] === 'hardwareBackPress')![1];
+    await act(async () => { expect(handler({ type: 'hardwareBackPress', timeStamp: 1 })).toBe(true); });
+    expect(screen.getByTestId('btn-fullscreen')).toBeTruthy();
+    expect(MirrorPlayerMock.load).toHaveBeenCalledTimes(loads);
+    expect(router.back).not.toHaveBeenCalled();
+    back.mockRestore();
+  });
+  it('returns to the controller when an external display connects during fullscreen', async () => {
+    await openPlayer();
+    await fireEvent.press(screen.getByTestId('btn-fullscreen'));
+    await act(async () => useExternal.setState({ connected: true }));
+    expect(screen.getByTestId('layout-controller')).toBeTruthy();
+    expect(screen.queryByTestId('btn-exit-fullscreen')).toBeNull();
+    expect(screen.getByTestId('segment-panel')).toBeTruthy();
+    await act(async () => useExternal.setState({ connected: false }));
+    expect(screen.getByTestId('btn-fullscreen')).toBeTruthy();
   });
   it('C-EXT-01 external mode: youtube → "TV에서 재생 중" + large badge; local → small preview', async () => {
     useExternal.setState({ connected: true, fake: true });
@@ -187,11 +257,11 @@ describe('PlayerScreen', () => {
     expect(screen.getByTestId('layout-controller')).toBeTruthy();
     expect(screen.getByTestId('tv-playing')).toHaveTextContent('TV에서 재생 중');
     expect(screen.queryByTestId('youtube-webview')).toBeNull();
-    expect(MirrorPlayerMock.setExternalContent).toHaveBeenCalledWith('youtube', expect.stringContaining('iframe_api'), 'https://yt-mirror-loop.local/');
+    expect(MirrorPlayerMock.setExternalContent).toHaveBeenCalledWith('youtube', expect.stringContaining('iframe_api'), 'https://yt-mirror-loop.local/', expect.any(String));
     await screen.unmount();
     await openPlayer(localVideo({ id: 'l' }));
     expect(screen.getByTestId('external-preview')).toBeTruthy();
-    expect(MirrorPlayerMock.setExternalContent).toHaveBeenCalledWith('local', null, null);
+    expect(MirrorPlayerMock.setExternalContent).toHaveBeenCalledWith('local', null, null, null);
     await act(async () => useExternal.setState({ connected: false, fake: false }));
     expect(screen.getByTestId('layout-solo')).toBeTruthy();
     expect(screen.getByTestId('native-player')).toBeTruthy();
@@ -234,7 +304,7 @@ describe('PlayerScreen', () => {
     await act(async () => MirrorPlayerMock.emit('onKey', { key: ' ', shift: false }));
     expect(MirrorPlayerMock.play).toHaveBeenCalled();
     await act(async () => MirrorPlayerMock.emit('onKey', { key: 'ArrowLeft', shift: true }));
-    expect(MirrorPlayerMock.seekBy).toHaveBeenCalledWith(-0.1);
+    expect(MirrorPlayerMock.seekTo).toHaveBeenCalledWith(0);
     await act(async () => MirrorPlayerMock.emit('onKey', { key: '.', shift: false }));
     expect(MirrorPlayerMock.stepFrames).toHaveBeenCalledWith(1);
     await act(async () => MirrorPlayerMock.emit('onKey', { key: 'm', shift: false }));
@@ -261,4 +331,40 @@ describe('SettingsScreen', () => {
     expect(useSettings.getState().excludeFromBackup).toBe(false);
     expect(onBackupChange).toHaveBeenCalledWith(false);
   });
+});
+
+it('unsaved labels guard back navigation and save only after an explicit choice', async () => {
+  await openPlayer(ytVideo({ segments: [{ id: 's', start: 10, end: 20, label: '원래' }] }));
+  await fireEvent.press(screen.getByTestId('seg-0-label-edit'));
+  await fireEvent.changeText(screen.getByTestId('seg-0-label'), '수정');
+  await fireEvent.press(screen.getByTestId('btn-back'));
+  expect(router.back).not.toHaveBeenCalled();
+  await pressAlertButton('계속 편집');
+  expect(screen.getByTestId('seg-0-label').props.value).toBe('수정');
+  expect(useLibrary.getState().videos[0].segments[0].label).toBe('원래');
+  await fireEvent.press(screen.getByTestId('btn-back'));
+  await pressAlertButton('저장하고 이동');
+  expect(useLibrary.getState().videos[0].segments[0].label).toBe('수정');
+  expect(router.back).toHaveBeenCalledTimes(1);
+});
+
+it('keeps the YouTube playback session and HTML when engine time and persisted playback advance', async () => {
+  await openPlayer();
+  const bridge = usePlayer.getState().bridge!;
+  const source = webviewCalls.props.source.html;
+  await act(async () => usePlayer.getState().onTime(0.15, 60));
+  await act(async () => usePlayer.getState().onTime(18, 60));
+  await act(async () => useLibrary.getState().savePlayback('y', 18, 1));
+  expect(usePlayer.getState().bridge).toBe(bridge);
+  expect(webviewCalls.props.source.html).toBe(source);
+  expect(screen.getByTestId('time-current')).toHaveTextContent('0:18.000');
+});
+
+it('keeps segment list scrolling enabled while a mirror segment is active and while scrubbing', async () => {
+  await openPlayer();
+  await act(async () => usePlayer.setState({ state: 'playing', t: 35 }));
+  expect(screen.getByTestId('segment-row-0').props.accessibilityState.selected).toBe(true);
+  expect(screen.getByTestId('segment-panel').props.scrollEnabled).toBe(true);
+  await act(async () => usePlayer.setState({ scrubbing: true, t: 36 }));
+  expect(screen.getByTestId('segment-panel').props.scrollEnabled).toBe(true);
 });

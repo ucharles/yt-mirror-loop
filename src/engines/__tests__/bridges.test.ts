@@ -104,8 +104,8 @@ describe('NativeBridge', () => {
     expect(MirrorPlayerMock.setLoop).toHaveBeenCalledWith(1, 3, true);
     expect(MirrorPlayerMock.clearLoop).toHaveBeenCalled();
     expect(MirrorPlayerMock.setExternalContent.mock.calls).toEqual([
-      ['local', null, null],
-      ['none', null, null],
+      ['local', null, null, null],
+      ['none', null, null, null],
     ]);
     expect(b.getAvailableRates()).toContain(0.25);
   });

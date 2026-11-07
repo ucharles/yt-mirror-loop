@@ -211,3 +211,14 @@ describe('PlayerController — loop, messages, errors', () => {
     expect(buildPlayerHtml({ script: '', baseUrl: 'https://example.github.io/app/' })).toContain('"origin":"https://example.github.io"');
   });
 });
+
+it('YouTube timeline seeks outside the loop disable it, while commanded seeks do not count as user seeks', () => {
+  const { ctl, yt, events, play, run } = setup();
+  ctl.handle({ type: 'setLoop', loop: { a: 10, b: 20, enabled: true } });
+  ctl.handle({ type: 'seekTo', t: 15 });
+  ctl.onDirectSeek(15);
+  expect(events.filter((e) => e.type === 'directSeek')).toHaveLength(0);
+  yt.seekTo(25); ctl.onDirectSeek(25); play(); run(500);
+  expect(yt.trueTime()).toBeGreaterThan(25);
+  expect(events).toContainEqual({ type: 'directSeek', t: 25 });
+});

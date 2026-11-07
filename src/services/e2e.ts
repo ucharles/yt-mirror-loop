@@ -56,7 +56,13 @@ export async function runE2ECommand(cmd: string, params: Record<string, string |
       return;
     }
     case 'seek':
-      usePlayer.getState().bridge?.seekTo(Number(params.t ?? 0));
+      usePlayer.getState().seekTo(Number(params.t ?? 0));
+      return;
+    case 'play':
+      usePlayer.getState().bridge?.play();
+      return;
+    case 'pause':
+      usePlayer.getState().bridge?.pause();
       return;
     case 'fake-external':
       await useExternal.getState().setFake(params.on === '1');

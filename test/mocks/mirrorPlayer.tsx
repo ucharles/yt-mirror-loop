@@ -33,6 +33,7 @@ export const MirrorPlayerMock = {
   setFakeExternalDisplay: jest.fn(async () => {}),
   setExternalContent: jest.fn(async () => {}),
   sendExternalCommand: jest.fn(async () => {}),
+  openYouTubeSettings: jest.fn(async () => true),
   enableKeyboardShortcuts: jest.fn(async () => {}),
 };
 

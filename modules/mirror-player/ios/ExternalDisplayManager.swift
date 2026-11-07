@@ -15,7 +15,7 @@ public final class ExternalDisplayManager: NSObject, WKScriptMessageHandler {
   public enum Content {
     case none
     case local(MirrorEngine)
-    case youtube(html: String, baseURL: URL)
+    case youtube(html: String, baseURL: URL, frameScript: String = "")
   }
 
   public static let shared = ExternalDisplayManager()
@@ -32,6 +32,7 @@ public final class ExternalDisplayManager: NSObject, WKScriptMessageHandler {
   public var onWebMessage: ((String) -> Void)?
 
   private var observing = false
+  private var settingsController: YouTubeSettingsController?
 
   // MARK: - Discovery
 
@@ -151,7 +152,39 @@ public final class ExternalDisplayManager: NSObject, WKScriptMessageHandler {
     render()
   }
 
+  private func closeSettings() {
+    guard let settings = settingsController else { return }
+    settingsController = nil
+    settings.player.removeFromSuperview()
+    settings.player.translatesAutoresizingMaskIntoConstraints = true
+    if let root = window?.rootViewController?.view {
+      settings.player.frame = root.bounds
+      settings.player.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+      root.addSubview(settings.player)
+    }
+    settings.player.evaluateJavaScript("window.__ytm && window.__ytm.showControls(false)", completionHandler: nil)
+    settings.dismiss(animated: true)
+  }
+
+  /// Reparents the *same* WKWebView; its current quality, captions and media state remain in memory.
+  public func openYouTubeSettings() -> Bool {
+    guard settingsController == nil, let webView,
+      let scene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene })
+        .first(where: { $0.session.role == .windowApplication && $0.activationState == .foregroundActive }),
+      let root = scene.windows.first(where: { $0.isKeyWindow })?.rootViewController else { return false }
+    var presenter = root
+    while let presented = presenter.presentedViewController { presenter = presented }
+    webView.removeFromSuperview()
+    let settings = YouTubeSettingsController(player: webView)
+    settings.onClose = { [weak self] in self?.closeSettings() }
+    settingsController = settings
+    webView.evaluateJavaScript("window.__ytm && window.__ytm.showControls(true)", completionHandler: nil)
+    presenter.present(settings, animated: true)
+    return true
+  }
+
   private func tearDownContentViews() {
+    closeSettings()
     if let playerView, case let .local(engine) = content { engine.detach(playerView.playerLayer) }
     playerView?.removeFromSuperview()
     playerView = nil
@@ -163,6 +196,7 @@ public final class ExternalDisplayManager: NSObject, WKScriptMessageHandler {
 
   private func render() {
     guard let root = window?.rootViewController?.view else { return }
+    closeSettings()
     // Detach from whatever engine the old view used.
     if let pv = playerView { pv.playerLayer.player = nil }
     playerView?.removeFromSuperview()
@@ -182,15 +216,14 @@ public final class ExternalDisplayManager: NSObject, WKScriptMessageHandler {
       root.addSubview(pv)
       engine.attach(pv.playerLayer)
       playerView = pv
-    case let .youtube(html, baseURL):
+    case let .youtube(html, baseURL, frameScript):
       let config = WKWebViewConfiguration()
       config.allowsInlineMediaPlayback = true
       config.mediaTypesRequiringUserActionForPlayback = []
       config.allowsAirPlayForMediaPlayback = false
       config.userContentController.add(self, name: "ytm")
-      // Same as FORCE_HLS_SCRIPT in src/engines/youtube/player/html.ts: YouTube uses native HLS in all frames.
       config.userContentController.addUserScript(WKUserScript(
-        source: "try{Object.defineProperty(window,'ManagedMediaSource',{value:undefined,configurable:true});Object.defineProperty(window,'MediaSource',{value:undefined,configurable:true});}catch(e){}",
+        source: frameScript,
         injectionTime: .atDocumentStart, forMainFrameOnly: false))
       let wv = WKWebView(frame: root.bounds, configuration: config)
       wv.autoresizingMask = [.flexibleWidth, .flexibleHeight]

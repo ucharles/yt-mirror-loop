@@ -12,6 +12,7 @@ type Props = {
   isLocal: boolean;
   rate: number;
   rates: number[];
+  onFullscreen?(): void;
   onPlay(): void;
   onPause(): void;
   onSeekBy(delta: number): void;
@@ -34,16 +35,19 @@ export function TransportControls(p: Props) {
           / {formatTime(p.duration)}
         </Text>
         <View style={{ flex: 1 }} />
-        {p.playing ? (
-          <Button testID="btn-pause" label="❚❚ 일시정지" variant="primary" onPress={p.onPause} />
-        ) : (
-          <Button testID="btn-play" label="▶ 재생" variant="primary" onPress={p.onPlay} />
-        )}
+        <View style={styles.playbackActions}>
+          {p.onFullscreen && <Button testID="btn-fullscreen" label="⛶" accessibilityLabel="전체화면" onPress={p.onFullscreen} />}
+          {p.playing ? (
+            <Button testID="btn-pause" style={styles.playPause} label="❚❚ 일시정지" variant="primary" onPress={p.onPause} />
+          ) : (
+            <Button testID="btn-play" style={styles.playPause} label="▶ 재생" variant="primary" onPress={p.onPlay} />
+          )}
+        </View>
       </View>
       <View style={styles.row}>
         {p.isLocal && p.onStep && <Button small testID="btn-frame-prev" label="−1f" onPress={() => p.onStep!(-1)} />}
         {SEEKS.map((d) => (
-          <Button small key={d} testID={seekId(d)} label={seekLabel(d)} onPress={() => p.onSeekBy(d)} />
+          <Button small key={d} testID={seekId(d)} variant={d < 0 ? 'subtract' : 'add'} label={seekLabel(d)} onPress={() => p.onSeekBy(d)} />
         ))}
         {p.isLocal && p.onStep && <Button small testID="btn-frame-next" label="+1f" onPress={() => p.onStep!(1)} />}
       </View>
@@ -64,6 +68,8 @@ export function TransportControls(p: Props) {
 
 const styles = StyleSheet.create({
   wrap: { gap: 8 },
+  playPause: { width: 120 },
+  playbackActions: { flexDirection: 'row', alignItems: 'stretch', gap: 6, minHeight: 44 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
   time: { color: colors.text, fontSize: 20, fontVariant: ['tabular-nums'], fontWeight: '700' },
   dim: { color: colors.textDim, fontSize: 14 },

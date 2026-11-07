@@ -21,8 +21,9 @@ declare class MirrorPlayerModule extends NativeModule<MirrorPlayerModuleEvents> 
   freeDiskSpace(): number;
   isExternalDisplayConnected(): Promise<{ connected: boolean; fake: boolean }>;
   setFakeExternalDisplay(on: boolean): Promise<void>;
-  setExternalContent(kind: 'none' | 'local' | 'youtube', html: string | null, baseUrl: string | null): Promise<void>;
+  setExternalContent(kind: 'none' | 'local' | 'youtube', html: string | null, baseUrl: string | null, frameScript: string | null): Promise<void>;
   sendExternalCommand(json: string): Promise<void>;
+  openYouTubeSettings(): Promise<boolean>;
   enableKeyboardShortcuts(): Promise<void>;
 }
 

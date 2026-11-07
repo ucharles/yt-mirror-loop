@@ -28,6 +28,8 @@ export type MirrorTransition = {
 export type PlayerEvent =
   | { type: 'ready'; rates: number[]; duration: number }
   | { type: 'timeupdate'; t: number; duration: number }
+  | { type: 'directSeek'; t: number }
+  | { type: 'rateChange'; rate: number }
   | { type: 'stateChange'; state: PlayerStateName }
   | { type: 'mirror'; transition: MirrorTransition }
   | { type: 'loop'; count: number; at: number }

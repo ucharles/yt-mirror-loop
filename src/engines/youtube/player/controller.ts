@@ -42,6 +42,7 @@ export class PlayerController {
   private loopSeekPending = false;
   private playRequest: { at: number; retries: number } | null = null;
   private stateName = 'unstarted';
+  private requestedSeeks: { t: number; until: number }[] = [];
   loopCount = 0;
 
   constructor(private env: ControllerEnv) {
@@ -122,6 +123,7 @@ export class PlayerController {
 
   private seek(t: number) {
     const target = Math.max(0, t);
+    this.requestedSeeks = [...this.requestedSeeks.filter((s) => s.until > this.env.now()), { t: target, until: this.env.now() + 2000 }].slice(-32);
     this.env.player.seekTo(target, true);
     this.clock.reset(target, this.env.now());
     this.lastSampleWall = this.env.now();
@@ -130,6 +132,23 @@ export class PlayerController {
 
   onReady() {
     this.env.post({ type: 'ready', rates: this.env.player.getAvailablePlaybackRates(), duration: this.env.player.getDuration() });
+  }
+
+  /** A seeking event from the embedded HTML video, including YouTube's own timeline. */
+  onDirectSeek(t: number) {
+    if (!Number.isFinite(t)) return;
+    const outsideLoop = this.loop?.enabled && (t < this.loop.a || t >= this.loop.b);
+    if (!outsideLoop && this.requestedSeeks.some((s) => this.env.now() < s.until && Math.abs(s.t - t) < 0.5)) return;
+    if (this.loop?.enabled && (t < this.loop.a || t >= this.loop.b)) this.loop = null;
+    this.clock.reset(t, this.env.now());
+    this.lastSampleWall = this.env.now();
+    this.syncMirror(t);
+    this.env.post({ type: 'directSeek', t });
+  }
+
+  onRateChange() {
+    this.resample(true);
+    this.env.post({ type: 'rateChange', rate: this.env.player.getPlaybackRate() });
   }
 
   onStateChange(code: number) {

@@ -43,6 +43,7 @@ export function LibraryScreen({ actions }: { actions: LibraryActions }) {
   const videos = useLibrary((s) => s.videos);
   const flows = useFlows();
   const { width } = useWindowDimensions();
+  const [gridWidth, setGridWidth] = useState(width);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<SortKey>('lastOpenedAt');
   const [source, setSource] = useState<'all' | 'youtube' | 'local'>('all');
@@ -51,7 +52,8 @@ export function LibraryScreen({ actions }: { actions: LibraryActions }) {
 
   const shown = useMemo(() => sortVideos(filterVideos(videos, { search, source, tags }), sort), [videos, search, source, tags, sort]);
   const tagList = useMemo(() => allTags(videos), [videos]);
-  const columns = Math.max(1, Math.floor((width - 24) / 300));
+  const columns = Math.max(1, Math.floor((gridWidth - 24) / 300));
+  const cardWidth = Math.max(0, (gridWidth - 24 - 12 * (columns - 1)) / columns);
   const info = videos.find((v) => v.id === infoId);
   const conflict = currentConflict(flows);
 
@@ -139,6 +141,8 @@ export function LibraryScreen({ actions }: { actions: LibraryActions }) {
       ) : (
         <FlatList
           testID="video-grid"
+          onLayout={(event) => setGridWidth(event.nativeEvent.layout.width)}
+          extraData={cardWidth}
           key={columns}
           data={shown}
           numColumns={columns}
@@ -146,7 +150,7 @@ export function LibraryScreen({ actions }: { actions: LibraryActions }) {
           contentContainerStyle={styles.grid}
           columnWrapperStyle={columns > 1 ? { gap: 12 } : undefined}
           renderItem={({ item }) => (
-            <View style={{ flex: 1 / columns, paddingBottom: 12 }}>
+            <View style={{ width: cardWidth, paddingBottom: 12 }}>
               <VideoCard
                 video={item}
                 thumbUri={actions.thumbUri(item)}

@@ -26,8 +26,8 @@ export function AbLoopPanel({ loop, loopCount, error, onMarkA, onMarkB, onNudge,
         <Text testID={`ab-${which}-value`} style={styles.value}>
           {v === null ? '--' : formatTime(v, true)}
         </Text>
-        <Button small testID={`ab-${which}-m0.1`} label="−.1" onPress={() => onNudge(which, -0.1)} disabled={v === null} />
-        <Button small testID={`ab-${which}-p0.1`} label="+.1" onPress={() => onNudge(which, 0.1)} disabled={v === null} />
+        <Button small testID={`ab-${which}-m0.1`} variant="subtract" label="−.1" onPress={() => onNudge(which, -0.1)} disabled={v === null} />
+        <Button small testID={`ab-${which}-p0.1`} variant="add" label="+.1" onPress={() => onNudge(which, 0.1)} disabled={v === null} />
       </View>
     );
   };

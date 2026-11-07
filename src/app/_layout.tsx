@@ -20,6 +20,7 @@ export default function RootLayout() {
     <>
       <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#0f1115' } }}>
+        <Stack.Screen name="player/[id]" options={{ gestureEnabled: false, fullScreenGestureEnabled: false }} />
         <Stack.Screen name="e2e/[...cmd]" options={{ presentation: 'transparentModal', animation: 'none' }} />
       </Stack>
       {IS_E2E && <E2ECommandBar />}

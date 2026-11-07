@@ -3,6 +3,8 @@ export const colors = {
   panel: '#171a21',
   panelAlt: '#1f232c',
   border: '#2a2f3a',
+  timeSubtract: 'rgba(96, 165, 250, 0.08)',
+  timeAdd: 'rgba(251, 146, 60, 0.08)',
   text: '#f2f4f8',
   textDim: '#9aa3b2',
   accent: '#4f8cff',

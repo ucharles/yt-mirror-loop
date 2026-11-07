@@ -7,18 +7,20 @@ type Props = {
   onPress?: () => void;
   testID?: string;
   accessibilityLabel?: string;
-  variant?: 'default' | 'primary' | 'danger' | 'active';
+  variant?: 'default' | 'primary' | 'danger' | 'active' | 'subtract' | 'add';
   disabled?: boolean;
+  selected?: boolean;
   style?: ViewStyle;
   small?: boolean;
 };
 
-export function Button({ label, onPress, testID, accessibilityLabel, variant = 'default', disabled, style, small }: Props) {
+export function Button({ label, onPress, testID, accessibilityLabel, variant = 'default', disabled, selected, style, small }: Props) {
   return (
     <Pressable
       testID={testID}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? label}
+      accessibilityState={{ disabled: !!disabled, selected }}
       disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [styles.base, small && styles.small, styles[variant], disabled && styles.disabled, pressed && styles.pressed, style]}
@@ -32,6 +34,8 @@ const styles = StyleSheet.create({
   base: { paddingHorizontal: 14, paddingVertical: 10, borderRadius: 8, backgroundColor: colors.panelAlt, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
   small: { paddingHorizontal: 8, paddingVertical: 6 },
   default: {},
+  subtract: { backgroundColor: colors.timeSubtract },
+  add: { backgroundColor: colors.timeAdd },
   primary: { backgroundColor: colors.accent, borderColor: colors.accent },
   danger: { backgroundColor: colors.danger, borderColor: colors.danger },
   active: { backgroundColor: colors.mirror, borderColor: colors.mirror },

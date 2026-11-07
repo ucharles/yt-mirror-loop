@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render, screen } from '@testing-library/react-native';
 
 import { localVideo, ytVideo } from '../../../test/fixtures';
 import { AbLoopPanel } from '../AbLoopPanel';
@@ -21,8 +21,9 @@ describe('Timeline', () => {
     expect(flat(screen.getByTestId('timeline-seg-0').props.style)).toMatchObject({ left: '30%', width: '10%' });
     expect(flat(screen.getByTestId('timeline-ab').props.style)).toMatchObject({ left: '10%', width: '10%' });
     expect(flat(screen.getByTestId('timeline-playhead').props.style)).toMatchObject({ left: '50%' });
-    await fireEvent(screen.getByTestId('timeline'), 'layout', { nativeEvent: { layout: { width: 200 } } });
-    await fireEvent.press(screen.getByTestId('timeline'), { nativeEvent: { locationX: 50 } });
+    await act(async () => screen.getByTestId('timeline').props.onLayout({ nativeEvent: { layout: { width: 200 } } }));
+    await fireEvent(screen.getByTestId('timeline'), 'responderGrant', { nativeEvent: { locationX: 50 } });
+    await fireEvent(screen.getByTestId('timeline'), 'responderRelease', { nativeEvent: { locationX: 50 } });
     expect(onSeek).toHaveBeenCalledWith(25);
     expect(pct(5, 0)).toBe(0);
   });
@@ -58,9 +59,18 @@ describe('SegmentList', () => {
     expect(onChange).toHaveBeenLastCalledWith([{ id: 'a', start: 10, end: 19 }]);
     await fireEvent.press(screen.getByTestId('seg-0-start-pf'));
     expect(onChange).toHaveBeenLastCalledWith([{ id: 'a', start: 10.033, end: 20 }]);
-    await fireEvent(screen.getByTestId('seg-0-label'), 'endEditing', { nativeEvent: { text: ' 뒤돌기 1 ' } });
+    expect(screen.queryByTestId('seg-0-label')).toBeNull();
+    expect(screen.queryByText('라벨 추가')).toBeNull();
+    await fireEvent.press(screen.getByTestId('seg-0-label-edit'));
+    await fireEvent.changeText(screen.getByTestId('seg-0-label'), ' 뒤돌기 1 ');
+    await fireEvent.press(screen.getByTestId('seg-0-label-edit'));
+    expect(screen.getByTestId('seg-0-label').props.value).toBe(' 뒤돌기 1 ');
+    await fireEvent.press(screen.getByTestId('seg-0-label-save'));
     expect(onChange).toHaveBeenLastCalledWith([{ id: 'a', start: 10, end: 20, label: '뒤돌기 1' }]);
-    await fireEvent(screen.getByTestId('seg-0-label'), 'endEditing', { nativeEvent: { text: '' } });
+    expect(screen.queryByTestId('seg-0-label')).toBeNull();
+    await fireEvent.press(screen.getByTestId('seg-0-label-edit'));
+    await fireEvent.changeText(screen.getByTestId('seg-0-label'), '');
+    await fireEvent.press(screen.getByTestId('seg-0-label-save'));
     expect(onChange).toHaveBeenLastCalledWith([{ id: 'a', start: 10, end: 20 }]);
     await fireEvent.press(screen.getByTestId('segment-row-0'));
     expect(onSeek).toHaveBeenLastCalledWith(10);
@@ -136,6 +146,13 @@ describe('ImportConflictSheet', () => {
 });
 
 describe('VideoCard', () => {
+  it('shows unknown YouTube duration until the player has supplied a cached duration', async () => {
+    const props = { onPress: jest.fn(), onMenu: jest.fn(), onRelink: jest.fn() };
+    const { rerender } = await render(<VideoCard {...props} video={ytVideo({ id: 'y' })} />);
+    expect(screen.getByTestId('card-duration-y')).toHaveTextContent('--:--');
+    await rerender(<VideoCard {...props} video={ytVideo({ id: 'y', durationMs: 125000 })} />);
+    expect(screen.getByTestId('card-duration-y')).toHaveTextContent('2:05');
+  });
   it('shows badge, title, segment count, duration and missing state', async () => {
     const onRelink = jest.fn();
     const onPress = jest.fn();

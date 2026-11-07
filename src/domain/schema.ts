@@ -27,6 +27,8 @@ const VideoBaseSchema = z.object({
 
 export const YouTubeVideoSchema = VideoBaseSchema.extend({
   source: z.literal('youtube'),
+  /** Cached player duration; absent until the video has been opened. */
+  durationMs: z.number().int().positive().optional(),
   videoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/, 'videoId must be 11 characters'),
   sourceUrl: z.string(),
 });

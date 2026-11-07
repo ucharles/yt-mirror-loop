@@ -11,6 +11,8 @@ export type LoopSetting = { a: number; b: number; enabled: boolean } | null;
 export type BridgeEvents = {
   ready: { rates: number[]; duration: number };
   time: { t: number; duration: number };
+  directSeek: { t: number };
+  rate: { rate: number };
   state: { state: PlayerStateName };
   mirror: MirrorTransition;
   loop: { count: number; at: number };

@@ -25,7 +25,7 @@ enum KeyboardShortcuts {
     for (input, _) in inputs {
       for flags in [UIKeyModifierFlags(), .shift] {
         let cmd = UIKeyCommand(input: input, modifierFlags: flags, action: #selector(UIViewController.ytm_handleKeyCommand(_:)))
-        cmd.wantsPriorityOverSystemBehavior = true
+        cmd.wantsPriorityOverSystemBehavior = false
         root.addKeyCommand(cmd)
       }
     }
@@ -35,6 +35,11 @@ enum KeyboardShortcuts {
 
 extension UIViewController {
   @objc func ytm_handleKeyCommand(_ command: UIKeyCommand) {
+    func isEditing(_ view: UIView) -> Bool {
+      if view.isFirstResponder && view is UITextInput { return true }
+      return view.subviews.contains(where: isEditing)
+    }
+    if isEditing(view) { return }
     guard let key = KeyboardShortcuts.name(for: command.input) else { return }
     KeyboardShortcuts.handler?(key, command.modifierFlags.contains(.shift))
   }

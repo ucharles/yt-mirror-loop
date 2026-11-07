@@ -59,6 +59,24 @@ describe('libraryStore', () => {
     lib.replaceAll([]);
     expect(stored()).toEqual([]);
   });
+  it('caches YouTube duration across reloads without repeated writes or changing edit timestamps', () => {
+    const video = ytVideo({ id: 'y' });
+    useLibrary.getState().add(video);
+    useLibrary.getState().add(localVideo({ id: 'l' }));
+    const writes = jest.spyOn(kv, 'set');
+    useLibrary.getState().saveYouTubeDuration('y', 123.456);
+    expect(stored().find((v: any) => v.id === 'y')).toMatchObject({ durationMs: 123456, updatedAt: video.updatedAt });
+    expect(writes).toHaveBeenCalledTimes(1);
+    for (const duration of [123.456, 0, -1, NaN, Infinity]) useLibrary.getState().saveYouTubeDuration('y', duration);
+    useLibrary.getState().saveYouTubeDuration('gone', 100);
+    useLibrary.getState().saveYouTubeDuration('l', 100);
+    expect(writes).toHaveBeenCalledTimes(1);
+    useLibrary.setState({ videos: [] });
+    useLibrary.getState().init();
+    expect(useLibrary.getState().videos.find((v) => v.id === 'y')).toMatchObject({ durationMs: 123456 });
+    useLibrary.getState().saveYouTubeDuration('y', 125);
+    expect(stored().find((v: any) => v.id === 'y').durationMs).toBe(125000);
+  });
   it('init loads, reconciles and deletes orphans; reset clears', () => {
     new LibraryRepo(kv).save({ schemaVersion: 1, videos: [localVideo({ id: 'l', fileName: 'gone.mp4' }), ytVideo()] });
     files.listVideoFiles.mockReturnValue(['orphan.mp4']);
@@ -202,5 +220,33 @@ describe('settingsStore', () => {
     skv.set(SETTINGS_KEY, '{bad');
     useSettings.getState().load();
     expect(useSettings.getState().excludeFromBackup).toBe(true);
+  });
+});
+
+describe('direct seeking and scrubbing', () => {
+  it('disables the loop before a direct outside seek, preserving A/B and rejecting stale time events', () => {
+    useLibrary.getState().add(ytVideo({ id: 'a' }));
+    const p = usePlayer.getState(); p.open('a');
+    const bridge = fakeBridge(); p.setBridge(bridge);
+    usePlayer.setState({ duration: 60, t: 15, loop: { a: 10, b: 20, enabled: true } });
+    p.seekTo(25);
+    expect(usePlayer.getState().loop).toEqual({ a: 10, b: 20, enabled: false });
+    expect(bridge.setLoop.mock.invocationCallOrder[0]).toBeLessThan(bridge.seekTo.mock.invocationCallOrder[0]);
+    p.onTime(15, 60);
+    expect(usePlayer.getState().t).toBe(25);
+    p.onTime(25, 60);
+    expect(usePlayer.getState().seekTarget).toBeNull();
+  });
+  it('scrubbing keeps optimistic time, resumes only previous playback and never re-enables a disabled loop', () => {
+    const p = usePlayer.getState(); const bridge = fakeBridge(); p.setBridge(bridge);
+    usePlayer.setState({ state: 'playing', duration: 60, t: 15, loop: { a: 10, b: 20, enabled: true } });
+    p.beginScrub(); p.updateScrub(30); p.seekTo(30); p.onTime(16, 60);
+    expect(usePlayer.getState().t).toBe(30);
+    p.updateScrub(15); p.seekTo(15); p.endScrub(15);
+    expect(bridge.pause).toHaveBeenCalledTimes(1); expect(bridge.play).toHaveBeenCalledTimes(1);
+    expect(usePlayer.getState().loop.enabled).toBe(false);
+    usePlayer.setState({ state: 'paused' });
+    p.beginScrub(); p.seekTo(12); p.endScrub(12);
+    expect(bridge.play).toHaveBeenCalledTimes(1);
   });
 });

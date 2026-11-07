@@ -69,6 +69,15 @@ export class YouTubeBridge implements PlayerBridge {
         this.playing = ev.state === 'playing';
         this.emitter.emit('state', { state: ev.state });
         break;
+      case 'directSeek':
+        this.lastTime = ev.t;
+        if (this.loop && (ev.t < this.loop.a || ev.t >= this.loop.b)) this.loop = null;
+        this.emitter.emit('directSeek', { t: ev.t });
+        break;
+      case 'rateChange':
+        this.rate = ev.rate;
+        this.emitter.emit('rate', { rate: ev.rate });
+        break;
       case 'mirror':
         this.emitter.emit('mirror', ev.transition);
         break;

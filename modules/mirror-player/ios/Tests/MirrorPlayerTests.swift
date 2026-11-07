@@ -199,6 +199,22 @@ final class MirrorPlayerTests: XCTestCase {
     manager.disconnect()
   }
 
+  // Settings must move the existing player, not create a second WebView or reload it.
+  func testYouTubeSettingsReusesExternalWebView() {
+    let manager = ExternalDisplayManager()
+    manager.setContent(.youtube(html: "<html><body>settings</body></html>", baseURL: URL(string: "https://yt-mirror-loop.local/")!))
+    manager.connect(window: UIWindow(frame: CGRect(x: 0, y: 0, width: 1920, height: 1080)), fake: true)
+    let page = manager.webView!
+    let tvRoot = manager.window!.rootViewController!.view!
+    XCTAssertTrue(page.superview === tvRoot)
+    XCTAssertTrue(manager.openYouTubeSettings())
+    XCTAssertTrue(manager.webView === page)
+    XCTAssertFalse(page.superview === tvRoot)
+    manager.disconnect()
+    XCTAssertNil(manager.webView)
+    XCTAssertNil(page.superview)
+  }
+
   // N-EXT-03
   func testExternalDisconnectKeepsPlayerState() {
     let engine = loadedEngine()

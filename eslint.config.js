@@ -5,7 +5,7 @@ const jest = require('eslint-plugin-jest');
 
 module.exports = defineConfig([
   expoConfig,
-  { ignores: ['ios/*', 'build/*', 'coverage/*', 'e2e/report/*', 'src/engines/youtube/player/generated.ts', 'assets/player.html'] },
+  { ignores: ['.expo/**', 'ios/*', 'build/*', 'coverage/*', 'e2e/report/*', 'src/engines/youtube/player/generated.ts', 'assets/player.html'] },
   {
     // Lazy requires keep native modules out of pure code paths and tests.
     rules: { '@typescript-eslint/no-require-imports': 'off' },
